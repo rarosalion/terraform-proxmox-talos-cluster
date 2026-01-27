@@ -35,12 +35,13 @@ resource "talos_machine_configuration_apply" "controlplane" {
   machine_configuration_input = data.talos_machine_configuration.controlplane.machine_configuration
   node                        = each.value.ip_address
   config_patches = concat([
-    templatefile("${path.module}/templates/install-disk.yaml.tmpl", {
-      hostname     = each.value.hostname
-      install_disk = each.value.install_disk
-    }),
-    file("${path.module}/templates/cp-scheduling.yaml"),
+      templatefile("${path.module}/templates/install-disk.yaml.tmpl", {
+        hostname     = each.value.hostname
+        install_disk = each.value.install_disk
+      }),
+      file("${path.module}/templates/cp-scheduling.yaml")
     ],
+    var.cluster.template_config_patch != null ? [templatestring(var.cluster.template_config_patch, each.value)] : [],
     var.cluster.config_patches
   )
 }
@@ -54,10 +55,12 @@ resource "talos_machine_configuration_apply" "worker" {
   machine_configuration_input = data.talos_machine_configuration.worker.machine_configuration
   node                        = each.value.ip_address
   config_patches = concat([
-    templatefile("${path.module}/templates/install-disk.yaml.tmpl", {
-      hostname     = each.value.hostname
-      install_disk = each.value.install_disk
-    })],
+      templatefile("${path.module}/templates/install-disk.yaml.tmpl", {
+        hostname     = each.value.hostname
+        install_disk = each.value.install_disk
+      })
+    ],
+    var.cluster.template_config_patch != null ? [templatestring(var.cluster.template_config_patch, each.value)] : [],
     var.cluster.config_patches
   )
 }

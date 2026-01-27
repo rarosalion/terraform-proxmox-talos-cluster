@@ -1,13 +1,14 @@
 variable "cluster" {
   description = "Cluster configuration"
   type = object({
-    name           = string                       # The name of the cluster
-    config_patches = optional(list(string), [])   # List of configuration patches to apply to the Talos machine configuration
-    node           = string                       # Default node to deploy the vms on
-    datastore      = string                       # Default datastore to deploy the vms on
-    vm_base_id     = number                       # The first VM ID for Proxmox VMs, with subsequent IDs counted up from it
-    install_disk   = optional(string, "/dev/sda") # The disk to install Talos on
-    ip_base_offset = optional(number, 10)         # Offset for IP addresses of the cluster nodes
+    name           = string                        # The name of the cluster
+    config_patches = optional(list(string), [])    # List of configuration patches to apply to the Talos machine configuration
+    template_config_patch = optional(string, null) # A string that will be expanded providing additional (potentially per-host) patches
+    node           = string                        # Default node to deploy the vms on
+    datastore      = string                        # Default datastore to deploy the vms on
+    vm_base_id     = number                        # The first VM ID for Proxmox VMs, with subsequent IDs counted up from it
+    install_disk   = optional(string, "/dev/sda")  # The disk to install Talos on
+    ip_base_offset = optional(number, 10)          # Offset for IP addresses of the cluster nodes
   })
   validation {
     condition     = can(regex("^[a-zA-Z0-9-]+$", var.cluster.name))
