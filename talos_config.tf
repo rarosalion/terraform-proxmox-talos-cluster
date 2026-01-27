@@ -41,7 +41,16 @@ resource "talos_machine_configuration_apply" "controlplane" {
       }),
       file("${path.module}/templates/cp-scheduling.yaml")
     ],
+    # Add virtual-ip network config, if cluster_vip_interface is set
+    var.cluster.cluster_vip_interface != null ? templatefile(
+      "${path.module}/templates/virtual-ip.yaml.tmpl", {
+        cluster_vip_interface = var.cluster.cluster_vip_interface
+        cluster_vip = var.cluster.cluster_vip_interface
+      }
+    ) : [],
+    # Add template_config_patch if set
     var.cluster.template_config_patch != null ? [templatestring(var.cluster.template_config_patch, each.value)] : [],
+    # Add user-provided config_patches
     var.cluster.config_patches
   )
 }
@@ -80,8 +89,10 @@ resource "talos_cluster_kubeconfig" "this" {
   depends_on = [talos_machine_bootstrap.this]
 
   client_configuration = talos_machine_secrets.this.client_configuration
+  # Connect to the first node to obtain the config...
   node                 = local.controlplanes[keys(local.controlplanes)[0]].ip_address
-  endpoint             = local.controlplanes[keys(local.controlplanes)[0]].ip_address
+  # ... but use the Virtual IP endpoint, if set, in the generated config file
+  endpoint = (cluster_vip != null) ? var.cluster.cluster_vip : local.controlplanes[keys(local.controlplanes)[0]].ip_address
 }
 
 # Waits for the Talos cluster to be ready /talos_cluster_health)
