@@ -2,7 +2,10 @@ resource "proxmox_virtual_environment_vm" "controlplane" {
   for_each = local.controlplanes
 
   lifecycle {
-    ignore_changes = [disk[0].file_id]
+    ignore_changes = [
+      disk[0].file_id,
+      node_name
+    ]
   }
 
   node_name = each.value.node
@@ -73,4 +76,30 @@ resource "proxmox_virtual_environment_vm" "controlplane" {
       }
     }
   }
+}
+
+resource "proxmox_virtual_environment_hagroup" "controlplane" {
+  for_each = local.workers  
+
+  group   = "talos-${each.key}"
+  comment = "Automatically created HA group for Talos node ${each.key}."
+
+  nodes = {
+    "${each.value.node}" = 1
+  }
+
+  restricted  = true
+  no_failback = false
+}
+
+resource "proxmox_virtual_environment_haresource" "controlplane" {
+  depends_on = [
+    proxmox_virtual_environment_hagroup.workers
+  ]
+  for_each = local.workers
+
+  resource_id = "vm:${each.value.vm_id}"
+  state       = "started"
+  group       = "talos-${each.key}"
+  comment     = "Managed by Terraform"
 }
