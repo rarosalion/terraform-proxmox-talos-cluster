@@ -89,10 +89,8 @@ resource "talos_cluster_kubeconfig" "this" {
   depends_on = [talos_machine_bootstrap.this]
 
   client_configuration = talos_machine_secrets.this.client_configuration
-  # Connect to the first node to obtain the config...
   node                 = local.controlplanes[keys(local.controlplanes)[0]].ip_address
-  # ... but use the Virtual IP endpoint, if set, in the generated config file
-  endpoint = (var.cluster.cluster_vip != null) ? var.cluster.cluster_vip : local.controlplanes[keys(local.controlplanes)[0]].ip_address
+  endpoint             = local.controlplanes[keys(local.controlplanes)[0]].ip_address
 }
 
 # Waits for the Talos cluster to be ready /talos_cluster_health)
