@@ -31,6 +31,10 @@ resource "talos_machine_configuration_apply" "controlplane" {
   depends_on = [proxmox_virtual_environment_vm.controlplane]
   for_each   = local.controlplanes
 
+  lifecycle {
+    replace_triggered_by = [proxmox_virtual_environment_vm.controlplane[each.key].id]
+  }
+
   client_configuration        = talos_machine_secrets.this.client_configuration
   machine_configuration_input = data.talos_machine_configuration.controlplane.machine_configuration
   node                        = each.value.ip_address
@@ -59,6 +63,10 @@ resource "talos_machine_configuration_apply" "controlplane" {
 resource "talos_machine_configuration_apply" "worker" {
   depends_on = [proxmox_virtual_environment_vm.worker]
   for_each   = local.workers
+
+  lifecycle {
+    replace_triggered_by = [proxmox_virtual_environment_vm.worker[each.key].id]
+  }
 
   client_configuration        = talos_machine_secrets.this.client_configuration
   machine_configuration_input = data.talos_machine_configuration.worker.machine_configuration
