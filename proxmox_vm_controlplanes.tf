@@ -93,9 +93,7 @@ resource "proxmox_virtual_environment_hagroup" "controlplane" {
 }
 
 resource "proxmox_virtual_environment_haresource" "controlplane" {
-  depends_on = [
-    proxmox_virtual_environment_hagroup.workers
-  ]
+  depends_on = [proxmox_virtual_environment_vm.controlplane]
   for_each = local.workers
 
   resource_id = "vm:${each.value.vm_id}"

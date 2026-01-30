@@ -102,9 +102,7 @@ resource "proxmox_virtual_environment_hagroup" "workers" {
 }
 
 resource "proxmox_virtual_environment_haresource" "workers" {
-  depends_on = [
-    proxmox_virtual_environment_hagroup.workers
-  ]
+  depends_on = [proxmox_virtual_environment_vm.worker]
   for_each = local.workers
 
   resource_id = "vm:${each.value.vm_id}"
