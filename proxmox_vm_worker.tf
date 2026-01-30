@@ -67,7 +67,7 @@ resource "proxmox_virtual_environment_vm" "worker" {
   #  - https://cloudinit.readthedocs.io/en/latest/reference/datasources/nocloud.html#dmi-specific-kernel-command-line
   #  - https://github.com/sergelogvinov/proxmox-csi-plugin/blob/main/docs/options-node.md
   smbios {
-    serial = "h=${each.value.node};i=${each.value.vm_id}"
+    serial = "h=${each.key};i=${each.value.vm_id}"
   }
 
   initialization {
