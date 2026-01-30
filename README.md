@@ -1,5 +1,18 @@
 <!-- BEGIN_TF_DOCS -->
 # terraform-proxmox-talos-cluster
+
+> Note this repository is a fork of [pascalinthecloud](https://github.com/pascalinthecloud/terraform-proxmox-talos-cluster)'s fantastic code.
+> If you're interested in this repo, I'd suggest taking a look at his code first.
+>
+> I originally planned to push code back to pascalinthecloud, but I believe
+> our setups differ too significantly, and therefore we ultimately need different
+> things. While I tried to update it without breaking his repo, making my changes
+> 'optional', it was just easier to make this work for me.
+>
+> I might try to merge the changes in down the track, but for now... you get what you get and you don't get upset! ;)
+>
+> This also means comments, docs, etc. may or may not be accurate for this repo.
+
 A Terraform module for provisioning a Kubernetes cluster on Proxmox using Talos Linux. This module automates node creation, Talos configuration, and Proxmox integration, offering a secure, lightweight, and efficient environment for homelabs or production use. It simplifies the Kubernetes setup and management process.
 
 Feel free to contact me, open an issue, or contribute to the project. Your feedback and contributions are always welcome! 🤓
