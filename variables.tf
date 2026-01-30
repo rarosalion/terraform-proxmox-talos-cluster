@@ -96,9 +96,3 @@ variable "worker" {
   })
 }
 
-variable "health_timeout" {
-  description = "Timeout to wait for the cluster to be healthy"
-  type = string
-  default = "5m"
-}
-

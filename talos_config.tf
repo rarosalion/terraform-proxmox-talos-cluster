@@ -92,22 +92,3 @@ resource "talos_cluster_kubeconfig" "this" {
   node                 = local.controlplanes[keys(local.controlplanes)[0]].ip_address
   endpoint             = local.controlplanes[keys(local.controlplanes)[0]].ip_address
 }
-
-# Waits for the Talos cluster to be ready /talos_cluster_health)
-# tflint-ignore: terraform_unused_declarations
-data "talos_cluster_health" "this" {
-  depends_on = [
-    talos_machine_bootstrap.this,
-    talos_machine_configuration_apply.worker,
-    talos_machine_configuration_apply.controlplane
-  ]
-
-  client_configuration = data.talos_client_configuration.this.client_configuration
-  control_plane_nodes  = [for _, controlplane in local.controlplanes : controlplane.ip_address]
-  worker_nodes         = [for _, worker in local.workers : worker.ip_address]
-  endpoints            = data.talos_client_configuration.this.endpoints
-
-  timeouts = {
-    read = var.health_timeout
-  }
-}
