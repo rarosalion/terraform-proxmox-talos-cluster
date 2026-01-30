@@ -59,6 +59,14 @@ resource "proxmox_virtual_environment_vm" "worker" {
     type = "l26" # Linux Kernel 2.6 - 6.X.
   }
 
+  # Add options to help proxmox-csi plugin identify hosts (if used)
+  # See:
+  #  - https://cloudinit.readthedocs.io/en/latest/reference/datasources/nocloud.html#dmi-specific-kernel-command-line
+  #  - https://github.com/sergelogvinov/proxmox-csi-plugin/blob/main/docs/options-node.md
+  smbios {
+    serial = "h=${each.value.node};i=${each.value.vm_id}"
+  }
+
   initialization {
     datastore_id = each.value.datastore
 
@@ -73,4 +81,6 @@ resource "proxmox_virtual_environment_vm" "worker" {
       }
     }
   }
+
+
 }
