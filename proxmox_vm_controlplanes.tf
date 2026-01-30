@@ -79,7 +79,7 @@ resource "proxmox_virtual_environment_vm" "controlplane" {
 }
 
 resource "proxmox_virtual_environment_hagroup" "controlplane" {
-  for_each = local.workers  
+  for_each = local.controlplanes
 
   group   = "talos-${each.key}"
   comment = "Automatically created HA group for Talos node ${each.key}."
@@ -94,7 +94,7 @@ resource "proxmox_virtual_environment_hagroup" "controlplane" {
 
 resource "proxmox_virtual_environment_haresource" "controlplane" {
   depends_on = [proxmox_virtual_environment_vm.controlplane]
-  for_each = local.workers
+  for_each = local.controlplanes
 
   resource_id = "vm:${each.value.vm_id}"
   state       = "started"
