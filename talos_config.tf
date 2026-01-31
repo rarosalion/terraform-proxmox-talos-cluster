@@ -26,13 +26,20 @@ data "talos_client_configuration" "this" {
   endpoints            = [for _, controlplane in local.controlplanes : controlplane.ip_address]
 }
 
+# Triggers when the controlplane host changed (e.g. deleted and re-built)
+# https://github.com/opentofu/opentofu/issues/3714
+resource "null_resource" "controlplane_changed" {
+  for_each   = local.controlplanes
+  triggers   = { on = proxmox_virtual_environment_vm.controlplane[each.key].id }
+}
+
 # Apply Talos machine configuration to controlplane VMs
 resource "talos_machine_configuration_apply" "controlplane" {
   depends_on = [proxmox_virtual_environment_vm.controlplane]
   for_each   = local.controlplanes
 
   lifecycle {
-    replace_triggered_by = [proxmox_virtual_environment_vm.controlplane[each.key].id]
+    replace_triggered_by = [null_resource.controlplane_change[each.key].id, proxmox_virtual_environment_vm.controlplane[each.key].id]
   }
 
   client_configuration        = talos_machine_secrets.this.client_configuration
@@ -59,13 +66,20 @@ resource "talos_machine_configuration_apply" "controlplane" {
   )
 }
 
+# Triggers when the worker host changed (e.g. deleted and re-built)
+# https://github.com/opentofu/opentofu/issues/3714
+resource "null_resource" "worker_changed" {
+  for_each   = local.workers
+  triggers   = { on = proxmox_virtual_environment_vm.worker[each.key].id }
+}
+
 # Apply Talos machine configuration to worker VMs
 resource "talos_machine_configuration_apply" "worker" {
   depends_on = [proxmox_virtual_environment_vm.worker]
   for_each   = local.workers
 
   lifecycle {
-    replace_triggered_by = [proxmox_virtual_environment_vm.worker[each.key].id]
+    replace_triggered_by = [null_resource.worker_changed[each.key].id, proxmox_virtual_environment_vm.worker[each.key].id]
   }
 
   client_configuration        = talos_machine_secrets.this.client_configuration
