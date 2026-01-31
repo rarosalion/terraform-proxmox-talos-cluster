@@ -39,7 +39,7 @@ resource "talos_machine_configuration_apply" "controlplane" {
   for_each   = local.controlplanes
 
   lifecycle {
-    replace_triggered_by = [null_resource.controlplane_change[each.key].id, proxmox_virtual_environment_vm.controlplane[each.key].id]
+    replace_triggered_by = [null_resource.controlplane_changed[each.key].id, proxmox_virtual_environment_vm.controlplane[each.key].id]
   }
 
   client_configuration        = talos_machine_secrets.this.client_configuration
