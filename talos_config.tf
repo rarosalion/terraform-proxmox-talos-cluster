@@ -5,7 +5,7 @@ resource "talos_machine_secrets" "this" {}
 data "talos_machine_configuration" "controlplane" {
   cluster_name = var.cluster.name
 
-  cluster_endpoint = "https://${local.controlplanes[keys(local.controlplanes)[0]].ip_address}:6443"
+  cluster_endpoint = local.cluster_endpoint
   machine_type     = "controlplane"
   machine_secrets  = talos_machine_secrets.this.machine_secrets
 }
@@ -14,7 +14,7 @@ data "talos_machine_configuration" "controlplane" {
 data "talos_machine_configuration" "worker" {
   cluster_name = var.cluster.name
 
-  cluster_endpoint = "https://${local.controlplanes[keys(local.controlplanes)[0]].ip_address}:6443"
+  cluster_endpoint = local.cluster_endpoint
   machine_type     = "worker"
   machine_secrets  = talos_machine_secrets.this.machine_secrets
 }
@@ -41,6 +41,10 @@ resource "talos_machine_configuration_apply" "controlplane" {
     }),
     file("${path.module}/templates/cp-scheduling.yaml"),
     ],
+    local.ha_vip_enabled ? [templatefile("${path.module}/templates/ha-vip.yaml.tmpl", {
+      vip = local.ha_vip
+      interface = var.cluster.ha_vip_interface
+    })] : [],
     var.cluster.config_patches
   )
 }
@@ -81,21 +85,16 @@ resource "talos_cluster_kubeconfig" "this" {
   endpoint             = local.controlplanes[keys(local.controlplanes)[0]].ip_address
 }
 
-# Waits for the Talos cluster to be ready /talos_cluster_health)
-# tflint-ignore: terraform_unused_declarations
-data "talos_cluster_health" "this" {
-  depends_on = [
-    talos_machine_bootstrap.this,
-    talos_machine_configuration_apply.worker,
-    talos_machine_configuration_apply.controlplane
-  ]
-
-  client_configuration = data.talos_client_configuration.this.client_configuration
-  control_plane_nodes  = [for _, controlplane in local.controlplanes : controlplane.ip_address]
-  worker_nodes         = [for _, worker in local.workers : worker.ip_address]
-  endpoints            = data.talos_client_configuration.this.endpoints
-
-  timeouts = {
-    read = "5m"
+# Wait for the Kubernetes API server to be ready
+# Uses a simple HTTP check instead of talos_cluster_health due to
+# https://github.com/siderolabs/talos/issues/7967 (health check requires CNI)
+data "http" "talos_health" {
+  url      = "https://${local.controlplanes[keys(local.controlplanes)[0]].ip_address}:6443/version"
+  insecure = true
+  retry {
+    attempts     = 60
+    min_delay_ms = 5000
+    max_delay_ms = 5000
   }
+  depends_on = [talos_machine_bootstrap.this]
 }
