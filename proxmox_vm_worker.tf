@@ -86,29 +86,3 @@ resource "proxmox_virtual_environment_vm" "worker" {
   }
 
 }
-
-# TODO: Recreate once bgp/proxmox is updated to handle PVE v9 HA settings
-
-# resource "proxmox_virtual_environment_hagroup" "workers" {
-#   for_each = local.workers  
-
-#   group   = "talos-${each.key}"
-#   comment = "Automatically created HA group for Talos node ${each.key}."
-
-#   nodes = {
-#     "${each.value.node}" = 1
-#   }
-
-#   restricted  = true
-#   no_failback = false
-# }
-
-# resource "proxmox_virtual_environment_haresource" "workers" {
-#   depends_on = [proxmox_virtual_environment_vm.worker]
-#   for_each = local.workers
-
-#   resource_id = "vm:${each.value.vm_id}"
-#   state       = "started"
-#   group       = "talos-${each.key}"
-#   comment     = "Managed by Terraform"
-# }
