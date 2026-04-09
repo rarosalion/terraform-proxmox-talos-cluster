@@ -45,7 +45,7 @@ resource "proxmox_virtual_environment_vm" "controlplane" {
   }
 
   dynamic network_device {
-    for_each = var.controlplane.overrides.additional_networks
+    for_each = try(var.controlplane.overrides.additional_networks, [])
 
     content {
       bridge = network_device.value.bridge

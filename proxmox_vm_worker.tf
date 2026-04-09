@@ -45,7 +45,7 @@ resource "proxmox_virtual_environment_vm" "worker" {
   }
 
   dynamic network_device {
-    for_each = var.worker.overrides.additional_networks
+    for_each = try(var.worker.overrides.additional_networks, [])
 
     content {
       bridge = network_device.value.bridge
