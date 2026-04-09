@@ -48,7 +48,7 @@ resource "proxmox_virtual_environment_vm" "controlplane" {
     for_each = try(var.controlplane.overrides.additional_networks, [])
 
     content {
-      bridge = network_device.value.bridge
+      bridge = coalesce(network_device.value.bridge, var.network.bridge)
       vlan_id = network_device.value.vlanid
     }
   }
