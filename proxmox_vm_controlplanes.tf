@@ -78,26 +78,28 @@ resource "proxmox_virtual_environment_vm" "controlplane" {
   }
 }
 
-resource "proxmox_virtual_environment_hagroup" "controlplane" {
-  for_each = local.controlplanes
+# TODO: Recreate once bgp/proxmox is updated to handle PVE v9 HA settings
 
-  group   = "talos-${each.key}"
-  comment = "Automatically created HA group for Talos node ${each.key}."
+# resource "proxmox_virtual_environment_hagroup" "controlplane" {
+#   for_each = local.controlplanes
 
-  nodes = {
-    "${each.value.node}" = 1
-  }
+#   group   = "talos-${each.key}"
+#   comment = "Automatically created HA group for Talos node ${each.key}."
 
-  restricted  = true
-  no_failback = false
-}
+#   nodes = {
+#     "${each.value.node}" = 1
+#   }
 
-resource "proxmox_virtual_environment_haresource" "controlplane" {
-  depends_on = [proxmox_virtual_environment_vm.controlplane]
-  for_each = local.controlplanes
+#   restricted  = true
+#   no_failback = false
+# }
 
-  resource_id = "vm:${each.value.vm_id}"
-  state       = "started"
-  group       = "talos-${each.key}"
-  comment     = "Managed by Terraform"
-}
+# resource "proxmox_virtual_environment_haresource" "controlplane" {
+#   depends_on = [proxmox_virtual_environment_vm.controlplane]
+#   for_each = local.controlplanes
+
+#   resource_id = "vm:${each.value.vm_id}"
+#   state       = "started"
+#   group       = "talos-${each.key}"
+#   comment     = "Managed by Terraform"
+# }
