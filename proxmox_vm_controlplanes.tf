@@ -44,6 +44,15 @@ resource "proxmox_virtual_environment_vm" "controlplane" {
     vlan_id = var.network.vlan_id
   }
 
+  dynamic network_device {
+    for_each = each.additional_networks
+
+    content {
+      bridge = each.value.bridge
+      vlan_id = each.value.vlanid
+    }
+  }
+
   disk {
     datastore_id = each.value.datastore
     interface    = "scsi0"
