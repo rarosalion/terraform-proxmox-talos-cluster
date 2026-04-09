@@ -98,6 +98,12 @@ variable "worker" {
         gateway    = string
         vlan_id    = optional(number, null)
       }), null)
+      additional_networks = optional(list(object({
+        ip_address = string
+        cidr       = string
+        gateway    = string
+        vlan_id    = optional(number, null)
+      })), [])
     })), {})
   })
 }
