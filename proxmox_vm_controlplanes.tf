@@ -45,11 +45,11 @@ resource "proxmox_virtual_environment_vm" "controlplane" {
   }
 
   dynamic network_device {
-    for_each = each.additional_networks
+    for_each = each.value.additional_networks
 
     content {
-      bridge = each.value.bridge
-      vlan_id = each.value.vlanid
+      bridge = network_device.value.bridge
+      vlan_id = network_device.value.vlanid
     }
   }
 
