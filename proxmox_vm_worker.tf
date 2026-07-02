@@ -92,6 +92,19 @@ resource "proxmox_virtual_environment_vm" "worker" {
         gateway = var.network.gateway
       }
     }
+
+    dynamic ip_config {
+      for_each = var.worker.overrides[each.key].additional_networks
+
+      content {
+        ipv4 {
+          address = "${ip_config.value.ip_address}/${ip_config.value.subnet}"
+          gateway = ip_config.value.gateway
+        }
+      }
+    }
+
+
   }
 
 }
