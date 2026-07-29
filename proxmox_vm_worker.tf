@@ -99,7 +99,6 @@ resource "proxmox_virtual_environment_vm" "worker" {
       content {
         ipv4 {
           address = "${ip_config.value.ip_address}/${ip_config.value.subnet}"
-          gateway = ip_config.value.gateway
         }
       }
     }
