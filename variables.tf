@@ -100,7 +100,7 @@ variable "worker" {
       additional_networks = optional(list(object({
         bridge     = optional(string, null)
         ip_address = string
-        gateway    = optional(string, null)
+        vlan_id    = optional(number, null)
       })), [])
     })), {})
   })
