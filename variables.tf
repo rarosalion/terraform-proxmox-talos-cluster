@@ -44,8 +44,6 @@ variable "controlplane" {
       additional_networks = optional(list(object({
         bridge     = optional(string, null)
         ip_address = string
-        subnet     = number
-        gateway    = optional(string, null)
         vlan_id    = optional(number, null)
       })), [])
     })), {})
@@ -102,9 +100,7 @@ variable "worker" {
       additional_networks = optional(list(object({
         bridge     = optional(string, null)
         ip_address = string
-        subnet     = number
         gateway    = optional(string, null)
-        vlan_id    = optional(number, null)
       })), [])
     })), {})
   })

@@ -98,7 +98,7 @@ resource "proxmox_virtual_environment_vm" "worker" {
 
       content {
         ipv4 {
-          address = "${ip_config.value.ip_address}/${ip_config.value.subnet}"
+          address = ip_config.value.ip_address
         }
       }
     }
