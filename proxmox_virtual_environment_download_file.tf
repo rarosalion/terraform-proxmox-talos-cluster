@@ -1,5 +1,5 @@
 # dowload talos image to datastore 
-resource "proxmox_virtual_environment_download_file" "this" {
+resource "proxmox_download_file" "this" {
   node_name               = var.cluster.node
   content_type            = "iso"
   datastore_id            = var.image.proxmox_datastore
