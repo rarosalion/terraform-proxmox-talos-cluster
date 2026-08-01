@@ -126,8 +126,6 @@ resource "talos_cluster_kubeconfig" "this" {
   node                 = local.controlplanes[keys(local.controlplanes)[0]].ip_address
   endpoint             = local.controlplanes[keys(local.controlplanes)[0]].ip_address
 }
-<<<<<<< HEAD
-=======
 
 # Wait for the Kubernetes API server to be ready
 # Uses a simple HTTP check instead of talos_cluster_health due to
@@ -142,4 +140,3 @@ data "http" "talos_health" {
   }
   depends_on = [talos_machine_bootstrap.this]
 }
->>>>>>> upstream/main
