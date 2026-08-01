@@ -62,7 +62,7 @@ resource "proxmox_virtual_environment_vm" "controlplane" {
     ssd          = true
     file_format  = "raw"
     size         = each.value.disk
-    file_id      = proxmox_virtual_environment_download_file.this.id
+    file_id      = proxmox_download_file.this.id
   }
 
   boot_order = ["scsi0"]
