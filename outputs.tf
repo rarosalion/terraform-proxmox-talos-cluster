@@ -18,7 +18,7 @@ output "kubeconfig" {
 
 output "talos_health" {
   description = "Health status of the Kubernetes API server, can be used for other resources to depend on"
-  value       = data.http.talos_health
+  value       = data.http.talos_health.response_body
 }
 
 output "talos_image_schematic_id" {
