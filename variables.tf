@@ -36,6 +36,7 @@ variable "controlplane" {
       memory       = optional(number, null)
       disk         = optional(number, null)
       install_disk = optional(string, null)
+      tags         = optional(list(string), []) # Extra Proxmox tags for this node, added alongside the cluster name tag
       network = optional(object({
         ip_address = string
         cidr       = string
@@ -93,6 +94,7 @@ variable "worker" {
       memory       = optional(number, null)
       disk         = optional(number, null)
       install_disk = optional(string, null)
+      tags         = optional(list(string), []) # Extra Proxmox tags for this node, added alongside the cluster name tag
       network = optional(object({
         ip_address = string
         cidr       = string

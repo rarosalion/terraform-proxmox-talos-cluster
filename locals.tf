@@ -94,6 +94,13 @@ locals {
         try(var.controlplane.overrides[format("controlplane-%s", i + 1)].install_disk, null),
         var.cluster.install_disk
       )
+
+      # Cluster name tag plus any node-specific extra tags (e.g. a tag matching the node's
+      # primary network, to mirror a tagging convention used elsewhere).
+      tags = concat(
+        [var.cluster.name],
+        try(var.controlplane.overrides[format("controlplane-%s", i + 1)].tags, [])
+      )
     }
   }
 
@@ -158,6 +165,13 @@ locals {
       install_disk = coalesce(
         try(var.worker.overrides[format("worker-%s", i + 1)].install_disk, null),
         var.cluster.install_disk
+      )
+
+      # Cluster name tag plus any node-specific extra tags (e.g. a tag matching the node's
+      # primary network, to mirror a tagging convention used elsewhere).
+      tags = concat(
+        [var.cluster.name],
+        try(var.worker.overrides[format("worker-%s", i + 1)].tags, [])
       )
     }
   }
