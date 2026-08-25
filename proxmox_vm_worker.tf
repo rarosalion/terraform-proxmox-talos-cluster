@@ -45,8 +45,8 @@ resource "proxmox_virtual_environment_vm" "worker" {
   }
 
   network_device {
-    bridge  = var.network.bridge
-    vlan_id = var.network.vlan_id
+    bridge  = each.value.bridge
+    vlan_id = each.value.vlan_id
   }
 
   dynamic network_device {
@@ -94,7 +94,7 @@ resource "proxmox_virtual_environment_vm" "worker" {
     ip_config {
       ipv4 {
         address = "${each.value.ip_address}/${each.value.subnet}"
-        gateway = var.network.gateway
+        gateway = each.value.gateway
       }
     }
 

@@ -54,6 +54,22 @@ locals {
         split("/", var.network.cidr)[1]
       )
 
+      # Gateway, VLAN, and bridge for the primary network interface - same override-or-default
+      # pattern as ip_address/subnet above, so a node can sit on a different VLAN/gateway than
+      # the cluster default (e.g. a worker on an isolated/VPN-forced VLAN).
+      gateway = coalesce(
+        try(var.controlplane.overrides[format("controlplane-%s", i + 1)].network.gateway, null),
+        var.network.gateway
+      )
+
+      vlan_id = try(var.controlplane.overrides[format("controlplane-%s", i + 1)].network.vlan_id, null) != null ? (
+        var.controlplane.overrides[format("controlplane-%s", i + 1)].network.vlan_id
+      ) : var.network.vlan_id
+
+      bridge = try(var.controlplane.overrides[format("controlplane-%s", i + 1)].network.bridge, null) != null ? (
+        var.controlplane.overrides[format("controlplane-%s", i + 1)].network.bridge
+      ) : var.network.bridge
+
       # Determine the CPU, memory, and disk specifications for the control plane node.
       # If an override is provided for the specific control plane node, use its specifications.
       # Otherwise, use the default specifications for the control plane nodes.
@@ -107,6 +123,22 @@ locals {
         try(split("/", var.worker.overrides[format("worker-%s", i + 1)].network.cidr)[1], null),
         split("/", var.network.cidr)[1]
       )
+
+      # Gateway, VLAN, and bridge for the primary network interface - same override-or-default
+      # pattern as ip_address/subnet above, so a node can sit on a different VLAN/gateway than
+      # the cluster default (e.g. a worker on an isolated/VPN-forced VLAN).
+      gateway = coalesce(
+        try(var.worker.overrides[format("worker-%s", i + 1)].network.gateway, null),
+        var.network.gateway
+      )
+
+      vlan_id = try(var.worker.overrides[format("worker-%s", i + 1)].network.vlan_id, null) != null ? (
+        var.worker.overrides[format("worker-%s", i + 1)].network.vlan_id
+      ) : var.network.vlan_id
+
+      bridge = try(var.worker.overrides[format("worker-%s", i + 1)].network.bridge, null) != null ? (
+        var.worker.overrides[format("worker-%s", i + 1)].network.bridge
+      ) : var.network.bridge
 
       cpu = coalesce(
         try(var.worker.overrides[format("worker-%s", i + 1)].cpu, null),

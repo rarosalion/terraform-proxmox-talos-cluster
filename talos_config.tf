@@ -54,7 +54,7 @@ resource "talos_machine_configuration_apply" "controlplane" {
       hostname    = each.key
       ip_address  = each.value.ip_address
       subnet      = each.value.subnet
-      gateway     = var.network.gateway
+      gateway     = each.value.gateway
       dns_servers = var.network.dns_servers
       interface   = var.cluster.ha_vip_interface
     }),
@@ -99,7 +99,7 @@ resource "talos_machine_configuration_apply" "worker" {
       hostname    = each.key
       ip_address  = each.value.ip_address
       subnet      = each.value.subnet
-      gateway     = var.network.gateway
+      gateway     = each.value.gateway
       dns_servers = var.network.dns_servers
       interface   = var.cluster.ha_vip_interface
     })],

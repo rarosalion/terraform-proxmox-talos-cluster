@@ -41,6 +41,7 @@ variable "controlplane" {
         cidr       = string
         gateway    = string
         vlan_id    = optional(number, null)
+        bridge     = optional(string, null)
       }), null)
       additional_networks = optional(list(object({
         bridge     = optional(string, null)
@@ -97,6 +98,7 @@ variable "worker" {
         cidr       = string
         gateway    = string
         vlan_id    = optional(number, null)
+        bridge     = optional(string, null)
       }), null)
       additional_networks = optional(list(object({
         bridge     = optional(string, null)
