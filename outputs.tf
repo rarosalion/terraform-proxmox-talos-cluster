@@ -40,3 +40,11 @@ output "cluster_endpoint" {
   description = "Kubernetes API endpoint for the cluster"
   value       = local.cluster_endpoint
 }
+
+output "node_ips" {
+  description = "Map of node alias (e.g. \"controlplane-1\", \"worker-5\") to its IP address, for consumers that need the concrete node list (e.g. firewall/pg_hba rules) rather than a CIDR range."
+  value = merge(
+    { for k, v in local.controlplanes : k => v.ip_address },
+    { for k, v in local.workers : k => v.ip_address }
+  )
+}

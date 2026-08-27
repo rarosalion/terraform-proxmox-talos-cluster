@@ -189,6 +189,7 @@ module "k8s_cluster_override" {
 | <a name="output_ha_vip"></a> [ha\_vip](#output\_ha\_vip) | HA VIP address for the cluster (when HA is enabled) |
 | <a name="output_ha_vip_enabled"></a> [ha\_vip\_enabled](#output\_ha\_vip\_enabled) | Whether HA VIP is enabled for the cluster |
 | <a name="output_kubeconfig"></a> [kubeconfig](#output\_kubeconfig) | Kubernetes kubeconfig for the cluster |
+| <a name="output_node_ips"></a> [node\_ips](#output\_node\_ips) | Map of node alias (e.g. "controlplane-1", "worker-5") to its IP address, for consumers that need the concrete node list (e.g. firewall/pg\_hba rules) rather than a CIDR range. |
 | <a name="output_talos_health"></a> [talos\_health](#output\_talos\_health) | Health status of the Kubernetes API server, can be used for other resources to depend on |
 | <a name="output_talos_image_schematic_id"></a> [talos\_image\_schematic\_id](#output\_talos\_image\_schematic\_id) | ID of the Talos image schematic |
 | <a name="output_talosconfig"></a> [talosconfig](#output\_talosconfig) | Talos configuration file for the cluster |
