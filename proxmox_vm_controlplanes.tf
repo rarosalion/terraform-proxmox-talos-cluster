@@ -32,7 +32,7 @@ resource "proxmox_virtual_environment_vm" "controlplane" {
 
   cpu {
     cores = each.value.cpu
-    type  = "host"
+    type  = var.cluster.cpu_type
   }
 
   memory {

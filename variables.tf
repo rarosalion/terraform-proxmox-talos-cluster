@@ -1,16 +1,17 @@
 variable "cluster" {
   description = "Cluster configuration"
   type = object({
-    name           = string                        # The name of the cluster
-    config_patches = optional(list(string), [])    # List of configuration patches to apply to the Talos machine configuration
-    template_config_patch = optional(string, null) # A string that will be expanded providing additional (potentially per-host) patches
-    node           = string                        # Default node to deploy the vms on
-    datastore      = string                        # Default datastore to deploy the vms on
-    vm_base_id     = number                        # The first VM ID for Proxmox VMs, with subsequent IDs counted up from it
-    install_disk   = optional(string, "/dev/sda")  # The disk to install Talos on
-    ip_base_offset = optional(number, 10)          # Offset for IP addresses of the cluster nodes
-    ha_vip           = optional(string, null)       # HA VIP address for the cluster (automatically enabled when multiple controlplanes are configured)
-    ha_vip_interface = optional(string, "eth0")     # Network interface to bind the HA VIP to (defaults to eth0)
+    name                  = string                       # The name of the cluster
+    config_patches        = optional(list(string), [])   # List of configuration patches to apply to the Talos machine configuration
+    template_config_patch = optional(string, null)       # A string that will be expanded providing additional (potentially per-host) patches
+    node                  = string                       # Default node to deploy the vms on
+    datastore             = string                       # Default datastore to deploy the vms on
+    vm_base_id            = number                       # The first VM ID for Proxmox VMs, with subsequent IDs counted up from it
+    install_disk          = optional(string, "/dev/sda") # The disk to install Talos on
+    ip_base_offset        = optional(number, 10)         # Offset for IP addresses of the cluster nodes
+    ha_vip                = optional(string, null)       # HA VIP address for the cluster (automatically enabled when multiple controlplanes are configured)
+    ha_vip_interface      = optional(string, "eth0")     # Network interface to bind the HA VIP to (defaults to eth0)
+    cpu_type              = optional(string, "host")     # QEMU CPU type for controlplane and worker VMs. "host" gives the best performance but can only live-migrate between identical physical CPUs - use a named baseline model (e.g. "SandyBridge") if nodes need to migrate across mixed hardware.
   })
 
   validation {

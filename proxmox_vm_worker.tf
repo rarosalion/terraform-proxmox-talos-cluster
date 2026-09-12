@@ -37,7 +37,7 @@ resource "proxmox_virtual_environment_vm" "worker" {
 
   cpu {
     cores = each.value.cpu
-    type  = "host"
+    type  = var.cluster.cpu_type
   }
 
   memory {
