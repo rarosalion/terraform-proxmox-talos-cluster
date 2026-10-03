@@ -7,6 +7,7 @@ data "talos_machine_configuration" "controlplane" {
 
   cluster_endpoint = local.cluster_endpoint
   machine_type     = "controlplane"
+  talos_version    = var.image.version
   machine_secrets  = talos_machine_secrets.this.machine_secrets
 }
 
@@ -16,6 +17,7 @@ data "talos_machine_configuration" "worker" {
 
   cluster_endpoint = local.cluster_endpoint
   machine_type     = "worker"
+  talos_version    = var.image.version
   machine_secrets  = talos_machine_secrets.this.machine_secrets
 }
 
