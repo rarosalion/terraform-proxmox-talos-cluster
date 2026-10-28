@@ -7,7 +7,7 @@ data "talos_machine_configuration" "controlplane" {
 
   cluster_endpoint = local.cluster_endpoint
   machine_type     = "controlplane"
-  talos_version    = var.image.version
+  talos_version    = coalesce(var.config_talos_version, var.image.version)
   machine_secrets  = talos_machine_secrets.this.machine_secrets
 }
 
@@ -17,7 +17,7 @@ data "talos_machine_configuration" "worker" {
 
   cluster_endpoint = local.cluster_endpoint
   machine_type     = "worker"
-  talos_version    = var.image.version
+  talos_version    = coalesce(var.config_talos_version, var.image.version)
   machine_secrets  = talos_machine_secrets.this.machine_secrets
 }
 
@@ -31,8 +31,8 @@ data "talos_client_configuration" "this" {
 # Triggers when the controlplane host changed (e.g. deleted and re-built)
 # https://github.com/opentofu/opentofu/issues/3714
 resource "null_resource" "controlplane_changed" {
-  for_each   = local.controlplanes
-  triggers   = { on = proxmox_virtual_environment_vm.controlplane[each.key].id }
+  for_each = local.controlplanes
+  triggers = { on = proxmox_virtual_environment_vm.controlplane[each.key].id }
 }
 
 # Apply Talos machine configuration to controlplane VMs
@@ -76,8 +76,8 @@ resource "talos_machine_configuration_apply" "controlplane" {
 # Triggers when the worker host changed (e.g. deleted and re-built)
 # https://github.com/opentofu/opentofu/issues/3714
 resource "null_resource" "worker_changed" {
-  for_each   = local.workers
-  triggers   = { on = proxmox_virtual_environment_vm.worker[each.key].id }
+  for_each = local.workers
+  triggers = { on = proxmox_virtual_environment_vm.worker[each.key].id }
 }
 
 # Apply Talos machine configuration to worker VMs
