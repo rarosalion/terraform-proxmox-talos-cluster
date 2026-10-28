@@ -66,6 +66,12 @@ variable "image" {
   })
 }
 
+variable "config_talos_version" {
+  description = "Talos version contract used to generate the machine configuration. Defaults to image.version. Set it to an older release to keep generating the legacy single-document config (for example when v1alpha1 patches conflict with the documents newer Talos releases generate) while still installing image.version."
+  type        = string
+  default     = null
+}
+
 variable "network" {
   description = "Network configuration for nodes"
   type = object({
